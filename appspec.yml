@@ -1,0 +1,54 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/app
+permissions:
+  - object: /var/www/app
+    pattern: "**"
+    owner: www-data
+    group: www-data
+    mode: 775
+    type:
+      - file
+hooks:
+  ApplicationStop:
+    - location: deploymentscripts/stop-application.sh
+      runas: root
+  BeforeInstall:
+    - location: deploymentscripts/metadata.sh
+      runas: root
+    - location: deploymentscripts/install-splunk.sh
+      runas: root
+    - location: deploymentscripts/install-packages.sh
+      runas: root
+  AfterInstall:
+    - location: deploymentscripts/configure-system.sh
+      runas: root
+################################################################################################
+# Uncomment one of these if your project uses Laravel or Symfony
+################################################################################################
+    - location: deploymentscripts/configure-laravel.sh
+      runas: root
+#    - location: deploymentscripts/configure-symfony.sh
+#      runas: root
+    - location: deploymentscripts/configure-application.sh
+      runas: root
+################################################################################################
+# Uncomment this if you need a supervisor config
+################################################################################################
+    - location: deploymentscripts/dnsrecordupdate.sh
+      runas: root
+    - location: deploymentscripts/set-permissions.sh
+      runas: root
+  ApplicationStart:
+    #    - location: deploymentscripts/configure-supervisor.sh
+    #      runas: root
+    - location: deploymentscripts/start-application.sh
+      runas: root
+################################################################################################
+# If your application is set up to run unit tests, uncomment this
+################################################################################################
+#  ValidateService:
+#    - location: deploymentscripts/run-tests.sh
+#      runas: root
