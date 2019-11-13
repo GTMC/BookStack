@@ -1,0 +1,4 @@
+[submodule "deploymentscripts"]
+	path = deploymentscripts
+	url = https://github.com/GTMC/deploymentscripts
+	branch = bookstack
